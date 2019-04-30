@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace SnakeGame
 {
@@ -10,19 +7,31 @@ namespace SnakeGame
     {
         static void Main(string[] args)
         {
-            var snakeBody = new Snakebody("*", 4);
-            var snakeHead = new Snakehead("X");
+            int x = 1;
+            object y = x;
+            object c = ConsoleColor.Green;
 
-            DrawSnake(snakeBody, snakeHead);
 
+            Console.ForegroundColor = ConsoleColor.Green;
+            var snake = new Snake('*', 4);
+            var isAlive = true;
+
+            while (isAlive)
+            {
+                snake.Move();
+                Console.Clear();
+                DrawSnake(snake);
+                Thread.Sleep(500);
+            }
             Console.ReadLine();
         }
 
-        private static void DrawSnake(Snakebody body, Snakehead head)
+        private static void DrawSnake(Snake snake)
         {
-            for (int i = 0; i < body; i++)
+            foreach (var snakepiece in snake.Body)
             {
-                Console.Write($"{body}");
+                Console.SetCursorPosition(snakepiece.X, snakepiece.Y);
+                Console.Write('*');
             }
         }
     }
