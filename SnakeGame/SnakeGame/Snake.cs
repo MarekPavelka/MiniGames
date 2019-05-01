@@ -1,39 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace SnakeGame
 {
-    public enum Direction
-    {
-        Left,
-        Right,
-        Up,
-        Down
-    };
-
     class Snake
     {
-        char _bodyType;
         public int Length { get; }
-        public List<SnakePiece> Body { get; set; }
+        public List<SnakePiece> Body { get; }
         public Direction Direction { get; set; }
         public SnakePiece Head => Body.Last();
         public SnakePiece Tail => Body.First();
+        private bool _shouldGrow = false;
 
-        public Snake(char body, int number)
+        public Snake(int number)
         {
-            _bodyType = body;
             Length = number;
             Body = Enumerable.Range(0, number).Select(offset => new SnakePiece(30 + offset, 12)).ToList(); //list of snakepieces
             Direction = Direction.Right;
         }
 
+        public bool BodyContains(int x, int y)
+        {
+            return Body.Any(piece => piece.X == x && piece.Y == y);
+        }
+
         public bool Move()
         {
-           
-            Body.RemoveAt(0); // remove tail
+
+            if (_shouldGrow) _shouldGrow = false;
+            else RemoveTail();
 
             int newHeadX = Head.X;
             int newHeadY = Head.Y;
@@ -47,6 +42,16 @@ namespace SnakeGame
             Body.Add(newHead);
 
             return true; // todo colisions
+        }
+
+        private void RemoveTail()
+        {
+            Body.RemoveAt(0);
+        }
+
+        public void Grow()
+        {
+            _shouldGrow = true;
         }
     }
 }
